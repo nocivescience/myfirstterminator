@@ -81,6 +81,66 @@ function getGrid(){
     const x= Math.ceil(canvas.width/gsize);
     const y= Math.ceil(canvas.height/gsize);
     for(let i=0; i<x; i++){
-        grid.x
+        grid.x[i]={
+            x: -1 + (gsize*i),
+            y: 0,
+            h: initialised? window.innerHeight:0, inc:y
+        }
     }
+    for(let i=0; i<y; i++){
+        grid.y[i]={
+            x:0,
+            y: -1+(gsize*i),
+            w: initialised? window.innerWidth:0, inc:x
+        }
+    }
+}
+function renderGrid(){
+    sctx.strokeStyle='rgba(225,255,255,.4';
+    sctx.lineWidth=2;
+    sctx.beginPath()
+    sctx.clearRect(0,0,scanvas.width, scanvas.height);
+    if(!initialised){
+        for (let i=0; i<grid.x.length; i++){
+            const line= grid.x[i];
+            if(line.h<canvas.height){
+                line.h+=line.inc
+            }else{
+                xdone=true
+            }
+            sctx.moveTo(line.x, line.y);
+            sctx.lineTo(line.x, line.h);
+        }
+        for (let i=0; i<grid.y.length; i++){
+            const line= grid.y[i];
+            if(line.w<canvas.width){
+                line.w+=line.inc
+            }else{
+                ydone=true
+            }
+            sctx.moveTo(line.x, line.y);
+            sctx.lineTo(line.w, line.y);
+        }
+    }else{
+        for (let i=0; i<grid.x.length; i++){
+            const line= grid.x[i];
+            sctx.moveTo(line.x, line.y);
+            sctx.lineTo(line.x, line.h);
+        }
+        for (let i=0; i<grid.y.length; i++){
+            const line= grid.y[i];
+            sctx.moveTo(line.x, line.y);
+            sctx.lineTo(line.w, line.y);
+        }
+    }
+    sctx.stroke();
+    if(xdone && ydone){
+        initialised=true
+    }
+}
+function render(){
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    sctx.clearRect(0,0,scanvas.width, scanvas.height);
+    renderGrid();
+    requestAnimationFrame(render);
 }
